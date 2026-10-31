@@ -1,0 +1,5 @@
+Model,Accuracy,Precision,Recall,F1,Seconds
+"Random Forest, 17 basic features",0.885,0.732,0.768,0.749,1
+"Random Forest, 28 features",0.925,0.825,0.843,0.833,2
+"Gradient Boosting, 28 features",0.906,0.746,0.88,0.807,1
+TF-IDF character n-grams + Logistic Regression,0.962,0.912,0.92,0.916,9

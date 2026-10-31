@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sam checks your link</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap">
+<style>
+:root{--bg:#EDF0E8;--panel:#F7F9F4;--ink:#2B3A38;--mute:#667873;--line:#DDE3D6;--accent:#3F7566;--on:#fff;--safe:#3F8A68;--warn:#9A6A12;--bad:#C25849;--bubble:#EFE6CE;--skin:#F2D3BA;--hair:#3A4F50;--sh:0 1px 2px rgba(50,60,40,.06),0 12px 30px rgba(50,60,40,.08);--r:22px;--f:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171F1E;--panel:#202B29;--ink:#E2E9E3;--mute:#A3B3AB;--line:#2F3D39;--accent:#8CC4AE;--on:#10201B;--safe:#86C9A3;--warn:#E5BE6B;--bad:#EE9A8D;--bubble:#38342A;--skin:#E8BE9E;--hair:#101A19;--sh:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#171F1E;--panel:#202B29;--ink:#E2E9E3;--mute:#A3B3AB;--line:#2F3D39;--accent:#8CC4AE;--on:#10201B;--safe:#86C9A3;--warn:#E5BE6B;--bad:#EE9A8D;--bubble:#38342A;--skin:#E8BE9E;--hair:#101A19;color-scheme:dark}
+:root[data-look="pro"]:not(.x){--bg:#F4F6FA;--panel:#fff;--ink:#101828;--mute:#566174;--line:#E2E7EF;--accent:#1F5FD6;--on:#fff;--safe:#12805C;--warn:#9A5B00;--bad:#C0362C;--bubble:#E8EEF8;--sh:0 1px 2px rgba(16,24,40,.05),0 1px 3px rgba(16,24,40,.07);--r:8px;--f:system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:light}
+html{font-size:17px;scroll-padding-top:env(safe-area-inset-top,0px)}html.big{font-size:21px}
+body{margin:0;color:var(--ink);font-family:var(--f);line-height:1.55;background:var(--bg) radial-gradient(700px 380px at 92% -6%,color-mix(in srgb,#D9C98F 30%,transparent),transparent),radial-gradient(800px 420px at -6% 14%,color-mix(in srgb,var(--accent) 15%,transparent),transparent)}
+.wrap{max-width:1080px;margin:0 auto;padding:30px 22px 56px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:28px}
+.brand{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:.9rem;color:var(--accent);background:color-mix(in srgb,var(--accent) 11%,transparent);padding:5px 14px 5px 8px;border-radius:99px;margin-bottom:14px}
+h1{font-size:clamp(1.9rem,4.2vw,2.8rem);line-height:1.08;margin:0 0 10px;font-weight:800;letter-spacing:-.025em}
+h1 span{color:var(--accent)}
+header p{margin:0;color:var(--mute);max-width:48ch;font-size:1.02rem}
+.tools{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.tools button{font:inherit;font-size:.82rem;font-weight:600;background:var(--panel);color:var(--mute);border:1px solid var(--line);border-radius:99px;padding:7px 15px;cursor:pointer;box-shadow:var(--sh);transition:.15s}
+.tools button:hover{color:var(--ink);transform:translateY(-1px)}
+main{display:grid;grid-template-columns:310px minmax(0,1fr);gap:28px;align-items:start}
+.sam{position:sticky;top:20px;text-align:center}
+.bubble{background:var(--bubble);border-radius:var(--r);padding:15px 18px;font-weight:600;text-align:left;position:relative;margin-bottom:18px;min-height:4.6em;box-shadow:var(--sh);transition:background .3s}
+.bubble:after{content:"";position:absolute;left:50%;bottom:-8px;width:18px;height:18px;background:inherit;transform:translateX(-50%) rotate(45deg);border-radius:4px}
+#face{width:240px;max-width:100%;height:auto;overflow:visible;background:radial-gradient(circle at 50% 52%,color-mix(in srgb,#D9C98F 38%,transparent) 0 58%,transparent 59%)}
+#face.think{animation:bob 1.2s ease-in-out infinite}#face.bad{animation:shake .45s 2}
+#face path.m,#face path.b{transition:d .35s ease}
+@keyframes bob{50%{transform:translateY(-5px) rotate(-2deg)}}@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:calc(var(--r) + 4px);padding:26px;box-shadow:var(--sh);animation:in .35s ease}
+label{font-weight:800;display:block;margin-bottom:10px;font-size:1.02rem}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+input,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid transparent;border-radius:16px;padding:15px 18px;transition:.15s}
+input{flex:1;min-width:200px}
+input:focus,textarea:focus{outline:none;border-color:var(--accent);background:var(--panel);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 18%,transparent)}
+.go{font:inherit;font-weight:800;background:var(--accent);color:var(--on);border:0;border-radius:16px;padding:15px 28px;cursor:pointer;transition:.15s;box-shadow:0 6px 16px color-mix(in srgb,var(--accent) 32%,transparent)}
+.go:hover{transform:translateY(-2px)}.go:active{transform:scale(.97)}.go:disabled{opacity:.6;cursor:wait}
+.go.alt{background:var(--bad);box-shadow:0 6px 16px color-mix(in srgb,var(--bad) 30%,transparent)}
+.go:focus-visible,.chip:focus-visible,.tools button:focus-visible,.tabs button:focus-visible,.cell:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.try{margin-top:16px;font-size:.88rem;color:var(--mute);font-weight:600}
+.chip{font:inherit;font-size:.85rem;font-weight:600;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:99px;padding:6px 14px;margin:6px 6px 0 0;cursor:pointer;transition:.15s}
+.chip:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+.tabs{display:flex;gap:4px;margin-bottom:16px;padding:5px;background:color-mix(in srgb,var(--ink) 7%,transparent);border-radius:99px;overflow-x:auto;width:fit-content;max-width:100%}
+.tabs button{font:inherit;font-weight:700;font-size:.86rem;white-space:nowrap;background:transparent;color:var(--mute);border:0;border-radius:99px;padding:9px 14px;cursor:pointer;transition:.18s}
+.tabs button:hover{color:var(--ink)}
+.tabs button[aria-selected=true]{background:var(--panel);color:var(--ink);box-shadow:var(--sh)}
+.tab[hidden]{display:none}
+#results{margin-top:22px}
+.check{display:flex;gap:13px;align-items:flex-start;padding:12px 15px;margin-top:8px;background:var(--bg);border-radius:16px;animation:in .3s ease}
+.check.hit{background:color-mix(in srgb,var(--bad) 9%,var(--panel));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--bad) 30%,transparent)}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+.dot{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:.85rem;background:var(--safe);color:var(--on)}
+.check.hit .dot{background:var(--bad)}
+.check b{display:block}.check span{color:var(--mute);font-size:.9rem}
+.pts{margin-left:auto;font-weight:800;color:var(--bad);white-space:nowrap}
+.verdict{margin-top:20px;border-radius:calc(var(--r) + 2px);padding:22px;background:color-mix(in srgb,var(--c) 10%,var(--panel));border:1.5px solid color-mix(in srgb,var(--c) 38%,transparent);animation:in .4s ease}
+.verdict h2{margin:0 0 4px;font-size:1.6rem;letter-spacing:-.02em;color:var(--c)}.verdict p{margin:0}
+.meter{height:14px;border-radius:99px;background:color-mix(in srgb,var(--ink) 10%,transparent);margin:16px 0 6px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:var(--c);border-radius:99px;transition:width 1.1s cubic-bezier(.2,.8,.2,1)}
+.scale{display:flex;justify-content:space-between;font-size:.78rem;color:var(--mute);font-weight:600}
+#hist{margin-top:20px;font-size:.88rem;color:var(--mute);font-weight:600}
+.note{margin-top:22px;font-size:.84rem;color:var(--mute);max-width:70ch}
+.gm{color:var(--mute);margin:0 0 10px;font-weight:700}
+.gu{font-size:1.2rem;font-weight:800;word-break:break-all;padding:20px;background:var(--bg);border-radius:18px;margin-bottom:16px;letter-spacing:-.01em}
+.gr{margin-top:16px;padding:16px;border-radius:18px;background:color-mix(in srgb,var(--c) 9%,var(--panel));border:1.5px solid color-mix(in srgb,var(--c) 40%,transparent);animation:in .3s}
+.gr h3{margin:0 0 4px;color:var(--c)}
+textarea{width:100%;min-height:130px;font-size:.92rem;box-sizing:border-box;margin-bottom:12px;resize:vertical}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:16px}
+th,td{text-align:left;padding:10px 8px;border-top:1px solid var(--line);vertical-align:top}
+th{color:var(--mute);font-size:.78rem;text-transform:uppercase;letter-spacing:.06em}
+th button{font:inherit;font-weight:800;background:none;border:0;color:var(--mute);cursor:pointer;padding:0;text-transform:uppercase;letter-spacing:.06em;font-size:.78rem}
+td.u{word-break:break-all}
+.pill{font-weight:800;border-radius:99px;padding:3px 12px;color:var(--on);white-space:nowrap;font-size:.82rem}
+.why{margin-top:18px}.why h4{margin:0 0 8px}
+.wr{display:grid;grid-template-columns:150px 1fr 40px;gap:10px;align-items:center;font-size:.88rem;margin:6px 0}
+.wr i{display:block;height:10px;border-radius:99px;background:var(--bad)}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.card{background:var(--bg);border-radius:18px;padding:16px 10px;text-align:center;color:var(--mute);font-weight:600;font-size:.85rem}
+.card b{display:block;font-size:1.7rem;color:var(--accent);letter-spacing:-.02em}
+.mx{display:grid;grid-template-columns:auto 1fr 1fr;gap:8px;max-width:440px;align-items:stretch;text-align:center;font-size:.85rem}
+.cell{font:inherit;border:2px solid transparent;border-radius:16px;background:var(--bg);color:var(--ink);padding:18px 6px;cursor:pointer;transition:.15s}
+.cell:hover{transform:translateY(-2px)}.cell b{display:block;font-size:1.5rem}.cell.sel{border-color:var(--accent)}
+.cell.good{background:color-mix(in srgb,var(--safe) 16%,var(--panel))}.cell.badc{background:color-mix(in srgb,var(--bad) 16%,var(--panel))}
+.ex{margin-top:12px;min-height:2.6em;color:var(--mute)}
+.mk{border-radius:6px;padding:1px 5px;font-weight:800;word-break:break-all}
+.ph{text-decoration:underline wavy var(--warn);text-underline-offset:4px}
+.msgbox{background:var(--bg);border-radius:18px;padding:16px;line-height:1.9;white-space:pre-wrap;word-break:break-word;margin-top:16px}
+.lk{display:flex;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line);font-size:.9rem}.lk span:first-child{word-break:break-all;flex:1}
+[data-look="pro"] .go,[data-look="pro"] input,[data-look="pro"] textarea,[data-look="pro"] .chip,[data-look="pro"] .check,[data-look="pro"] .gu,[data-look="pro"] .card,[data-look="pro"] .cell,[data-look="pro"] .msgbox{border-radius:8px}
+[data-look="pro"] .tabs,[data-look="pro"] .tabs button{border-radius:8px}[data-look="pro"] h1{letter-spacing:-.01em}
+@media (max-width:780px){main{grid-template-columns:1fr}.sam{position:static}header{flex-direction:column}.tools{justify-content:flex-start}.cards{grid-template-columns:repeat(2,1fr)}.wr{grid-template-columns:110px 1fr 40px}.panel{padding:20px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.cf{position:fixed;top:-14px;width:9px;height:14px;border-radius:2px;z-index:99;pointer-events:none;animation:fall 1.8s ease-in forwards}
+@keyframes fall{to{transform:translate(var(--dx),108vh) rotate(var(--r))}}
+.hintsam{font-size:.8rem;color:var(--mute);font-weight:600;margin-top:6px}
+#face{cursor:pointer}
+footer{margin-top:34px;text-align:center;font-size:.82rem;color:var(--mute)}
+#face .hand{display:none}#face.p-idle #hw,#face.p-think #ht,#face.p-safe #hs,#face.p-warn #hv,#face.p-bad #hb{display:inline}
+.nm{display:inline-flex;align-items:center;gap:4px;font-size:.82rem;font-weight:600;color:var(--mute);background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:3px 4px 3px 14px;box-shadow:var(--sh)}
+.nm input{width:96px;min-width:0;flex:none;border:0;background:transparent;font:inherit;font-weight:700;color:var(--ink);padding:5px 10px;border-radius:99px}
+.nm input:focus{background:var(--bg);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+main{transition:grid-template-columns .45s ease}
+.sam{transition:opacity .35s,transform .45s}
+.proonly{display:none}.statbar{gap:8px;flex-wrap:wrap;margin:-8px 0 22px;font-size:.82rem;color:var(--mute)}
+.statbar span{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:5px 11px}.statbar b{color:var(--ink);font-variant-numeric:tabular-nums}
+html.sw *{transition:background-color .5s,color .5s,border-color .5s,box-shadow .5s,border-radius .5s,opacity .4s!important}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.5s}
+[data-look="pro"] body{background:var(--bg);font-variant-numeric:tabular-nums}
+[data-look="pro"] .proonly{display:flex}
+[data-look="pro"] main{grid-template-columns:0 minmax(0,1fr);column-gap:0}
+[data-look="pro"] .sam{opacity:0;visibility:hidden;transform:translateX(-24px);overflow:hidden;height:0}
+[data-look="pro"] h1{font-size:1.75rem;font-weight:700;letter-spacing:-.015em}[data-look="pro"] h1 span{color:var(--ink)}
+[data-look="pro"] .brand{border-radius:6px;background:transparent;border:1px solid var(--line);padding:4px 12px 4px 8px;color:var(--ink)}
+[data-look="pro"] .brand svg{color:var(--accent)}
+[data-look="pro"] .tools button,[data-look="pro"] .nm{border-radius:6px;box-shadow:none}
+[data-look="pro"] .panel{border-radius:10px;box-shadow:var(--sh)}
+[data-look="pro"] .tabs{background:transparent;border-radius:0;padding:0;border-bottom:1px solid var(--line);gap:20px;width:100%;overflow-x:auto}
+[data-look="pro"] .tabs button{border-radius:0;padding:10px 2px;border-bottom:2px solid transparent;margin-bottom:-1px}
+[data-look="pro"] .tabs button[aria-selected=true]{background:transparent;box-shadow:none;color:var(--accent);border-bottom-color:var(--accent)}
+[data-look="pro"] .go{box-shadow:none}[data-look="pro"] .go:hover{transform:none;filter:brightness(1.08)}
+[data-look="pro"] .check{background:transparent;border-radius:0;margin:0;border-top:1px solid var(--line);padding:12px 4px}
+[data-look="pro"] .check.hit{background:color-mix(in srgb,var(--bad) 6%,var(--panel));box-shadow:none}
+[data-look="pro"] .verdict{background:var(--panel);border:1px solid var(--line);border-left:5px solid var(--c);border-radius:8px}
+[data-look="pro"] .meter{height:8px;border-radius:4px}[data-look="pro"] .meter i{border-radius:4px}
+[data-look="pro"] .pill{border-radius:4px}[data-look="pro"] .chip{border-radius:6px}
+[data-look="pro"] .card{border:1px solid var(--line);background:var(--panel)}
+[data-look="pro"] tr:nth-child(even) td{background:color-mix(in srgb,var(--ink) 2.5%,transparent)}
+@media (max-width:780px){[data-look="pro"] main{grid-template-columns:1fr}}
+html{scroll-behavior:smooth}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}}
+.wrap>*{animation:rise .7s cubic-bezier(.2,.8,.2,1) backwards}
+.wrap>:nth-child(2){animation-delay:.08s}.wrap>:nth-child(3){animation-delay:.16s}.wrap>:nth-child(4){animation-delay:.24s}
+.panel,.go,.chip,.cell,.tabs button,.tools button{transition:transform .18s,box-shadow .25s,background-color .25s,color .25s,border-color .25s}
+.chip:active,.cell:active,.tools button:active{transform:scale(.96)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <div class="brand"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.4 9.2-8 11-4.6-1.8-8-6-8-11V5l8-3z" fill="currentColor"/><path d="M8 12l3 3 5-6" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>LinkCheck</div>
+    <h1>Is this link <span>safe</span> to click?</h1>
+    <p>Paste a link and Sam will go through it one clue at a time, then tell you what he thinks.</p>
+  </div>
+  <div class="tools"><label class="nm" style="margin:0">Name<input id="nm" value="Danish" maxlength="20" aria-label="Your name"></label> <button id="vc" type="button" aria-pressed="false">Voice: off</button> <button id="look" type="button">Switch to official look</button> <button id="big" type="button" aria-pressed="false">Bigger text</button></div>
+</header>
+<div class="statbar proonly"><span><b>96.2%</b> accuracy</span><span><b>91.2%</b> precision</span><span><b>91.8%</b> recall</span><span>Model: TF-IDF + Logistic Regression</span><span>Data: 100,000 URLs</span></div>
+<main>
+  <section class="sam" aria-live="polite">
+    <div class="bubble" id="say">Hi, I’m Sam. Give me a link and I’ll take a look.</div>
+    <svg id="face" class="p-idle" viewBox="-25 0 250 235" role="img" aria-label="Sam, a friendly character who reacts to your link">
+      <path d="M20 230 Q22 168 100 160 Q178 168 180 230Z" fill="var(--accent)"/>
+      <path d="M100 160 L82 176 L100 196 L118 176Z" fill="var(--panel)"/>
+      <rect x="82" y="140" width="36" height="28" rx="12" fill="var(--skin)"/>
+      <circle cx="40" cy="100" r="13" fill="var(--skin)"/><circle cx="160" cy="100" r="13" fill="var(--skin)"/>
+      <ellipse cx="100" cy="95" rx="62" ry="64" fill="var(--skin)"/>
+      <path d="M36 88 Q40 24 100 28 Q162 24 164 88 Q148 50 100 54 Q52 50 36 88Z" fill="var(--hair)"/>
+      <circle cx="68" cy="124" r="9" fill="var(--bad)" opacity=".18"/><circle cx="132" cy="124" r="9" fill="var(--bad)" opacity=".18"/>
+      <circle cx="75" cy="98" r="14" fill="#fff"/><circle cx="125" cy="98" r="14" fill="#fff"/>
+      <circle id="pl" cx="75" cy="98" r="7" fill="#1D3438"/><circle id="pr" cx="125" cy="98" r="7" fill="#1D3438"/>
+      <ellipse class="lid" id="lidl" cx="75" cy="98" rx="15" ry="15" fill="var(--skin)" opacity="0"/>
+      <path class="b" id="bl" d="M58 76 Q75 70 92 76" stroke="var(--hair)" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path class="b" id="br" d="M108 76 Q125 70 142 76" stroke="var(--hair)" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path class="m" id="mo" d="M82 138 Q100 152 118 138" stroke="#7A3B33" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <defs><symbol id="palm" viewBox="0 0 30 40"><g fill="var(--skin)" stroke="rgba(0,0,0,.14)" stroke-width="1"><rect x="3" y="15" width="24" height="23" rx="9"/><rect x="3" y="3" width="5" height="19" rx="2.5"/><rect x="9.5" y=".5" width="5" height="21" rx="2.5"/><rect x="16" y="1.5" width="5" height="20" rx="2.5"/><rect x="22" y="5" width="5" height="17" rx="2.5"/><rect x="-2" y="19" width="7" height="14" rx="3.5" transform="rotate(-28 1 26)"/></g></symbol>
+<symbol id="thumb" viewBox="0 0 30 40"><g fill="var(--skin)" stroke="rgba(0,0,0,.14)" stroke-width="1"><rect x="3" y="17" width="24" height="21" rx="8"/><rect x="10" y="1" width="10" height="22" rx="5"/></g><path d="M7 25h16M7 31h16" stroke="rgba(0,0,0,.14)" fill="none"/></symbol></defs>
+<g id="hw" class="hand"><g><animateTransform attributeName="transform" type="rotate" values="-6 165 196;12 165 196;-6 165 196" dur="1.3s" repeatCount="indefinite"/><path d="M165 196 Q188 188 196 154" stroke="var(--accent)" stroke-width="22" fill="none" stroke-linecap="round"/><use href="#palm" x="181" y="114" width="30" height="40"/></g></g>
+<g id="ht" class="hand"><path d="M165 198 Q150 200 130 172" stroke="var(--accent)" stroke-width="22" fill="none" stroke-linecap="round"/><use href="#palm" x="106" y="136" width="26" height="35" transform="rotate(-18 119 153)"/></g>
+<g id="hs" class="hand"><path d="M165 198 Q190 190 196 158" stroke="var(--accent)" stroke-width="22" fill="none" stroke-linecap="round"/><use href="#thumb" x="181" y="114" width="30" height="40"/></g>
+<g id="hv" class="hand"><path d="M35 198 Q10 190 4 164" stroke="var(--accent)" stroke-width="22" fill="none" stroke-linecap="round"/><use href="#palm" x="-11" y="124" width="30" height="40" transform="rotate(-14 4 150)"/><path d="M165 198 Q190 190 196 164" stroke="var(--accent)" stroke-width="22" fill="none" stroke-linecap="round"/><use href="#palm" x="181" y="124" width="30" height="40" transform="rotate(14 196 150)"/></g>
+<g id="hb" class="hand"><path d="M165 198 Q190 172 190 134" stroke="var(--accent)" stroke-width="22" fill="none" stroke-linecap="round"/><use href="#palm" x="172" y="82" width="36" height="48"/></g>
+</svg>
+    <div class="hintsam">Tap Sam for a safety tip. Press / to jump to the link box.</div>
+  </section>
+
+  <section>
+    <nav class="tabs" role="tablist" aria-label="Sections"><button role="tab" data-t="check" aria-selected="true">Check a link</button><button role="tab" data-t="game" aria-selected="false">Spot the phish</button><button role="tab" data-t="batch" aria-selected="false">Batch check</button><button role="tab" data-t="msg" aria-selected="false">Message check</button><button role="tab" data-t="dash" aria-selected="false">Model dashboard</button></nav>
+    <div class="panel tab" id="t-check">
+      <label for="url">Link to check</label>
+      <div class="row">
+        <input id="url" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="e.g. http://paypal-secure-login.verify-account.tk/signin">
+        <button class="go" id="go" type="button">Check this link</button>
+      </div>
+      <div class="try">No link handy? Try one of these:
+        <div id="chips"></div>
+      </div>
+      <div id="results"></div>
+      <div id="hist"></div>
+    </div>
+    <div class="panel tab" id="t-game" hidden><div id="g"></div></div>
+    <div class="panel tab" id="t-batch" hidden><label for="bi">Paste one link per line (up to 50)</label><textarea id="bi" spellcheck="false" placeholder="https://example.com&#10;http://paypal-login.verify.tk/signin"></textarea><div class="row"><button class="go" id="bgo" type="button">Check all</button><button class="chip" id="bfill" type="button">Fill with examples</button><button class="chip" id="bcopy" type="button">Copy results</button></div><div id="bout"></div></div>
+    <div class="panel tab" id="t-msg" hidden><label for="mi">Paste an SMS, WhatsApp or email message</label><textarea id="mi" spellcheck="false" placeholder="e.g. Your bank account is blocked. Verify now: http://sbi-verify.xyz/login"></textarea><div class="row"><button class="go" id="mgo" type="button">Check message</button></div><div class="try">Try one:<div id="mch"></div></div><div id="mout"></div></div>
+    <div class="panel tab" id="t-dash" hidden><div id="dash"></div></div>
+    <p class="note">Sam shows the clues, and a Random Forest trained on thousands of links gives the final risk score. The clues are: link length, HTTPS, hyphens, IP addresses, subdomains, pressure words and look-alike brand names. He only reads the text of the link and never opens it, so treat his answer as a first filter, not a guarantee.</p>
+  </section>
+</main>
+<footer>Made by Danish Khan · A first-line filter, not a guarantee. Never enter passwords on a link you are unsure about.</footer>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const EX=[["Everyday site","https://www.wikipedia.org"],["Fake PayPal","http://paypal-secure-login.verify-account.tk/signin"],["Numbers, not a name","http://192.168.4.7/bank/update@login.php"],["Fake Google","https://accounts.google.com.security-check.xyz/verify"]];
+const WORDS=["login","signin","verify","secure","security","account","update","bank","confirm","password","wallet","suspend","kyc","otp","claim","prize","gift","lottery","refund"];
+const OFFICIAL={paypal:["paypal.com"],google:["google.com","gmail.com","youtube.com","google.co.in","googleapis.com"],amazon:["amazon.com","amazon.in","amazon.co.uk","amazonaws.com"],microsoft:["microsoft.com","microsoftonline.com","live.com","office.com","outlook.com"],apple:["apple.com","icloud.com"],netflix:["netflix.com"],facebook:["facebook.com","fb.com"],instagram:["instagram.com"],sbi:["sbi.co.in","onlinesbi.sbi","onlinesbi.com","sbi.bank.in"],hdfc:["hdfcbank.com","hdfc.com","hdfclife.com"],icici:["icicibank.com","icicibank.co.in","icici.com"],paytm:["paytm.com"]};
+const TRUSTED=new Set([].concat(...Object.values(OFFICIAL),["github.com","wikipedia.org","stackoverflow.com","linkedin.com","flipkart.com","nytimes.com","bbc.co.uk","bbc.com","irctc.co.in","twitter.com","x.com","whatsapp.com","zoom.us","dropbox.com","reddit.com","medium.com","coursera.org","python.org","mozilla.org","adobe.com"]));
+const trustedTld=h=>/\.(gov|edu|mil)$/.test(h)||/\.(gov|nic|ac)\.in$/.test(h)||/\.(gov|ac)\.uk$/.test(h);
+const BRANDS=["paypal","google","amazon","microsoft","apple","netflix","facebook","instagram","sbi","hdfc","icici","paytm"];
+const TLDS=["tk","xyz","top","ml","ga","cf","click","zip","gq","work"];
+const SHORT=["bit.ly","tinyurl.com","t.co","goo.gl","is.gd","cutt.ly","rebrand.ly"];
+
+const face={
+ idle:{m:"M82 138 Q100 152 118 138",l:"M58 76 Q75 70 92 76",r:"M108 76 Q125 70 142 76"},
+ think:{m:"M92 142 Q100 146 108 142",l:"M58 74 Q75 68 92 76",r:"M108 66 Q125 60 142 68"},
+ safe:{m:"M74 132 Q100 166 126 132",l:"M58 70 Q75 62 92 70",r:"M108 70 Q125 62 142 70"},
+ warn:{m:"M84 146 Q100 141 116 146",l:"M58 70 Q75 62 92 70",r:"M108 77 L142 75"},
+ bad:{m:"M80 150 Q100 132 120 150",l:"M58 82 L92 70",r:"M108 70 L142 82"}
+};
+function mood(k){const f=face[k];$("mo").setAttribute("d",f.m);$("bl").setAttribute("d",f.l);$("br").setAttribute("d",f.r);
+ $("face").setAttribute("class","p-"+k+(k==="think"?" think":k==="bad"?" bad":""))}
+function say(t){$("say").textContent=t}
+let VOICE=false;const speak=t=>{if(VOICE&&"speechSynthesis" in window){speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance(t))}};const sayv=t=>{say(t);speak(t)};
+function countUp(el,to,dec=0,suf=""){if(matchMedia("(prefers-reduced-motion:reduce)").matches){el.textContent=to.toFixed(dec)+suf;return}const t0=performance.now();(function f(n){const k=Math.min(1,(n-t0)/900),e=1-Math.pow(1-k,3);el.textContent=(to*e).toFixed(dec)+suf;if(k<1)requestAnimationFrame(f)})(t0)}
+
+// eyes follow the pointer
+document.addEventListener("pointermove",e=>{
+ const r=$("face").getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height*.42;
+ const dx=e.clientX-cx,dy=e.clientY-cy,d=Math.hypot(dx,dy)||1,k=Math.min(5,d/40);
+ const ox=dx/d*k,oy=dy/d*k;
+ $("pl").setAttribute("cx",75+ox);$("pl").setAttribute("cy",98+oy);$("pr").setAttribute("cx",125+ox);$("pr").setAttribute("cy",98+oy);
+});
+// blinking
+setInterval(()=>{const p=[$("pl"),$("pr")];p.forEach(x=>x.style.transform="scaleY(.1)");p.forEach(x=>{x.style.transformOrigin="center";x.style.transformBox="fill-box"});
+ setTimeout(()=>p.forEach(x=>x.style.transform=""),120)},3800);
+$("pl").style.transition=$("pr").style.transition="transform .08s";
+
+function analyse(raw){
+ let s=raw.trim(),typed=/^[a-z][a-z0-9+.-]*:\/\//i.test(s);
+ if(/\s/.test(s))return null;
+ let u;try{u=new URL(typed?s:"http://"+s);const hn=u.hostname;if(!(/^(?:[a-z0-9-]{1,63}\.)+(?:[a-z]{2,24}|xn--[a-z0-9-]+)$/i.test(hn)||/^\d{1,3}(\.\d{1,3}){3}$/.test(hn)))throw 0}catch(e){return null}
+ const host=u.hostname.toLowerCase(),full=s.toLowerCase(),L=host.split(".");
+ const sec=(L.length>=3&&L.at(-1).length===2&&["co","com","org","net","gov","ac"].includes(L.at(-2)))?3:2;
+ const reg=L.slice(-sec),regLabel=reg[0],tld=L.at(-1);
+ const isIP=/^\d{1,3}(\.\d{1,3}){3}$/.test(host);
+ const regDom=reg.join("."),trusted=TRUSTED.has(regDom)||trustedTld(host);
+ const words=trusted?[]:WORDS.filter(w=>full.includes(w)),brand=trusted?null:BRANDS.find(b=>host.includes(b)&&!(OFFICIAL[b]||[]).includes(regDom));
+ const hy=(host.match(/-/g)||[]).length,dots=L.length-1;
+ const puny=host.includes("xn--"),short=SHORT.includes(host);
+ const C=[];
+ const add=(t,hit,pts,ok,bad)=>C.push({t,hit,pts:hit?pts:0,say:hit?bad:ok});
+ add("Secure connection",typed&&u.protocol==="http:",12,typed?"The link uses HTTPS, so the connection is encrypted.":"No scheme given, so I can’t judge this one.","It starts with plain http, so nothing is encrypted.");
+ add("Link length",!trusted&&s.length>54,s.length>75?10:5,`Only ${s.length} characters, which is normal.`,`${s.length} characters is long. Long links often hide things.`);
+ add("Name or numbers",isIP,30,"The address is a proper domain name.","The address is just numbers (an IP). Real companies almost never do this.");
+ add("The @ symbol",host!==u.host&&false||s.includes("@"),20,"No @ symbol in the link.","An @ can make the browser ignore everything before it. A classic trick.");
+ add("Hyphens in the domain",hy>=2,10,"Few or no hyphens in the domain.",`${hy} hyphens in the domain. Fakes often glue words together.`);
+ add("Subdomain depth",dots>3,12,"A normal number of dots in the address.",`${dots} dots means many sub-parts, often used to bury the real domain.`);
+ add("Pressure words",words.length>0,Math.min(24,words.length*8),trusted?"This is a well-known official site, so normal wording is fine.":"No “login”, “verify” or similar bait words.",`Found: ${words.join(", ")}. These push you to act fast.`);
+ add("Look-alike brand",!!brand,25,"No brand name pretending to be the real owner.",`It uses “${brand}” but the real domain is ${reg.join(".")}.`);
+ add("Unusual ending",TLDS.includes(tld),12,`.${tld} is a common, widely used ending.`,`.${tld} is cheap or free, and often used for throwaway sites.`);
+ add("Disguised address",puny||short,20,"The address isn’t shortened or disguised.",puny?"It uses look-alike characters (punycode).":"It’s a shortened link, so the real target is hidden.");
+ const score=Math.min(100,C.reduce((a,c)=>a+c.pts,0));
+ return{C,score,host}
+}
+const sleep=ms=>matchMedia("(prefers-reduced-motion:reduce)").matches?Promise.resolve():new Promise(r=>setTimeout(r,ms));
+const hist=[];let busy=false;
+
+async function run(){
+ if(busy)return;const raw=$("url").value;
+ if(!raw.trim()){say("Paste a link first and I’ll get started.");mood("idle");$("url").focus();return}
+ const a=analyse(raw);
+ if(!a){mood("warn");say(/\s/.test(raw.trim())?"That looks like a sentence, not a link. Use the Message check tab for whole messages.":"That doesn’t look like a link yet. Try something like example.com/page.");$("results").innerHTML="";return}
+ busy=true;$("go").disabled=true;$("go").textContent="Looking…";$("results").innerHTML="";
+ mood("think");say(`Hmm ${N()}, let me look at this one carefully…`);
+ for(const c of a.C){
+  await sleep(380);
+  const d=document.createElement("div");d.className="check"+(c.hit?" hit":"");
+  d.innerHTML=`<div class="dot">${c.hit?"!":"✓"}</div><div><b>${c.t}</b><span>${c.say}</span></div>${c.hit?`<div class="pts">+${c.pts}</div>`:""}`;
+  $("results").appendChild(d);
+  if(c.hit)say(c.say);
+ }
+ await sleep(400);
+ let score=a.score,src="rules";
+ if(!apiDown&&location.protocol.startsWith("http"))try{const r=await fetch("/predict",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url:raw})});
+  if(r.ok){score=Math.round((await r.json()).probability*100);src="model"}else apiDown=true}catch(e){apiDown=true}
+ const v=score<20?["safe","Safe to open","var(--safe)",`${N()}, this link looks safe. I didn’t find anything worrying, but only click links you were expecting.`]
+  :score<45?["warn","Be careful","var(--warn)",`${N()}, be careful. A few things look off, so check with the sender before clicking.`]
+  :["bad","Not safe","var(--bad)",`${N()}, this link is not safe. Don’t click it, and don’t type any password there.`];
+ const box=document.createElement("div");box.className="verdict";box.style.setProperty("--c",v[2]);
+ box.innerHTML=`<h2>${v[1]}</h2><p>${v[3]}</p><div class="meter"><i></i></div><div class="scale"><span>Safe</span><span>${src==="model"?"Model":"Rule"} risk: <b class="cu" data-to="${score}">0</b> / 100</span><span>Dangerous</span></div>${why(a)}`;
+ $("results").appendChild(box);box.querySelectorAll(".cu").forEach(e=>countUp(e,+e.dataset.to));box.scrollIntoView({behavior:"smooth",block:"nearest"});
+ const cp=document.createElement("button");cp.className="chip";cp.type="button";cp.textContent="Copy summary";
+ cp.onclick=async()=>{try{await navigator.clipboard.writeText(`${raw.trim()} → ${v[1]} (risk ${score}/100)`);cp.textContent="Copied!"}catch(e){cp.textContent="Copy blocked"}};box.appendChild(cp);
+ requestAnimationFrame(()=>requestAnimationFrame(()=>box.querySelector("i").style.width=Math.max(4,score)+"%"));
+ if(v[0]==="safe")burst();mood(v[0]);sayv(v[0]==="safe"?`${N()}, all clear from my side. Nice one!`:v[0]==="warn"?`${N()}, I’m not fully sure about this one.`:`${N()}, stop! This one worries me a lot.`);
+ hist.unshift({raw,score:score,col:v[2]});if(hist.length>5)hist.pop();drawHist();
+ busy=false;$("go").disabled=false;$("go").textContent="Check this link";
+}
+function drawHist(){
+ $("hist").innerHTML=hist.length?"Recently checked:<br>":"";
+ hist.forEach(h=>{const b=document.createElement("button");b.className="chip";b.type="button";
+  b.innerHTML=`<span style="color:${h.col}">●</span> ${h.raw.length>34?h.raw.slice(0,34)+"…":h.raw}`;
+  b.onclick=()=>{$("url").value=h.raw;run()};$("hist").appendChild(b)})
+}
+EX.forEach(([n,u])=>{const b=document.createElement("button");b.className="chip";b.type="button";b.textContent=n;
+ b.onclick=()=>{$("url").value=u;run()};$("chips").appendChild(b)});
+$("go").onclick=run;
+$("url").addEventListener("keydown",e=>{if(e.key==="Enter")run()});
+$("big").onclick=()=>{const on=document.documentElement.classList.toggle("big");$("big").setAttribute("aria-pressed",on)};
+
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const vd=n=>n<20?["Safe","var(--safe)"]:n<45?["Careful","var(--warn)"]:["Phishing","var(--bad)"];
+// why this verdict
+function why(a){const h=a.C.filter(c=>c.hit).sort((x,y)=>y.pts-x.pts);
+ return `<div class="why"><h4>Why this verdict</h4>`+(h.length?h.map(c=>`<div class="wr"><span>${c.t}</span><i style="width:${Math.max(6,c.pts*3)}px;max-width:100%"></i><b>+${c.pts}</b></div>`).join("")+`<span style="color:var(--mute);font-size:.84rem">Each bar is how many risk points that clue added.</span>`:`<span style="color:var(--mute)">No clue raised the risk, so nothing is pushing the score up.</span>`)+`</div>`}
+// tabs and look
+function show(t){document.querySelectorAll(".tab").forEach(x=>x.hidden=x.id!=="t-"+t);
+ document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.t===t));
+ if(t==="game"&&!G)gStart();if(t==="dash"&&!$("dash").innerHTML)dashInit();}
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>show(b.dataset.t));
+$("look").onclick=()=>{const h=document.documentElement,p=h.dataset.look!=="pro";
+ const swap=()=>{h.dataset.look=p?"pro":"";$("look").textContent=p?"Switch to friendly look":"Switch to official look"};
+ if(document.startViewTransition&&!matchMedia("(prefers-reduced-motion:reduce)").matches)document.startViewTransition(swap);
+ else{h.classList.add("sw");swap();setTimeout(()=>h.classList.remove("sw"),700)}};
+// game
+const POOL=[["https://www.wikipedia.org",0],["https://github.com/anthropics",0],["https://www.bbc.co.uk/news",0],["https://accounts.google.com/signin",0],["https://www.irctc.co.in",0],["https://www.paypal.com/myaccount",0],["http://paypal-secure-login.verify-account.tk/signin",1],["http://192.168.4.7/bank/update@login.php",1],["https://accounts.google.com.security-check.xyz/verify",1],["http://amazon-offer-update.top/confirm?id=88312",1],["https://secure.hdfcbank.com.login-verify.click/netbanking",1],["http://bit.ly/free-gift-claim",1]];
+let G=null;function gBest(){let b=G.s;try{b=Math.max(b,+localStorage.getItem("lc_best")||0);localStorage.setItem("lc_best",b)}catch(e){}return b}
+function gStart(){G={q:[...POOL].sort(()=>Math.random()-.5).slice(0,8),i:0,s:0};gShow()}
+function gShow(){
+ if(G.i>=G.q.length){const f=G.s/G.q.length;if(f>.85)burst();mood(f>.7?"safe":"warn");say(f>.7?`Sharp eyes, ${N()}! You’d make a good analyst.`:`Tricky, right ${N()}? That’s why we need a model.`);
+  $("g").innerHTML=`<h2 style="margin:0">You got ${G.s} out of ${G.q.length}</h2><p class="gm">Your best: ${gBest()} / ${G.q.length}</p><p>${f>.85?"Excellent. You spotted nearly every trick.":f>.6?"Good. A few clever links fooled you.":"Phishing links are built to fool people. That is exactly why automatic detection matters."}</p><button class="go" id="gagain" type="button">Play again</button>`;$("gagain").onclick=gStart;return}
+ mood("think");say(`Take your time, ${N()}. Would you click this?`);
+ $("g").innerHTML=`<p class="gm">Round ${G.i+1} of ${G.q.length}. Score: ${G.s}</p><div class="gu">${esc(G.q[G.i][0])}</div><div class="row"><button class="go" data-a="0" type="button">Looks safe</button><button class="go alt" data-a="1" type="button">Looks phishing</button></div><div id="gr"></div>`}
+$("g").onclick=e=>{const b=e.target.closest("button");if(!b)return;
+ if(b.id==="gnext"){G.i++;return gShow()}
+ if(b.dataset.a===undefined||$("gr").innerHTML)return;
+ const [u,t]=G.q[G.i],ok=+b.dataset.a===t;G.s+=ok;const h=analyse(u).C.filter(c=>c.hit);
+ mood(ok?"safe":"warn");sayv(ok?`Nice catch, ${N()}!`:`Ooh, that one fooled you, ${N()}.`);
+ $("gr").className="gr";$("gr").style.setProperty("--c",ok?"var(--safe)":"var(--bad)");
+ $("gr").innerHTML=`<h3>${ok?"Correct!":"Not quite."} This link is ${t?"phishing":"safe"}.</h3><p>${h.length?"Clues Sam found: "+h.map(c=>c.say).map(esc).join(" "):"No warning signs. Just a normal site."}${!t&&h.length?" Bait words can appear on real sites too, so one clue is never proof.":""}</p><button class="go" id="gnext" type="button">${G.i+1<G.q.length?"Next link":"See my score"}</button>`;$("gnext").focus()};
+// batch
+let B=[],sortDesc=true;
+function bDraw(){const r=[...B].sort((a,b)=>sortDesc?b.score-a.score:a.score-b.score);
+ $("bout").innerHTML=r.length?`<table><tr><th>Link</th><th><button id="bsort" type="button">Risk ${sortDesc?"▼":"▲"}</button></th><th>Verdict</th><th>Biggest clue</th></tr>`+r.map(x=>{const v=x.score<0?["Invalid","var(--mute)"]:vd(x.score);return `<tr><td class="u">${esc(x.u)}</td><td>${x.score<0?"–":x.score}</td><td><span class="pill" style="background:${v[1]}">${v[0]}</span></td><td>${esc(x.top)}</td></tr>`}).join("")+`</table>`:"";
+ const s=$("bsort");if(s)s.onclick=()=>{sortDesc=!sortDesc;bDraw()}}
+$("bgo").onclick=()=>{B=$("bi").value.split(/\n+/).map(x=>x.trim()).filter(Boolean).slice(0,50).map(u=>{const a=analyse(u);if(!a)return{u,score:-1,top:"Not a valid link"};const h=a.C.filter(c=>c.hit).sort((x,y)=>y.pts-x.pts)[0];return{u,score:a.score,top:h?h.t:"None"}});bDraw()};
+$("bfill").onclick=()=>{$("bi").value=EX.map(e=>e[1]).concat(["github.com","not a link"]).join("\n");$("bgo").click()};
+$("bcopy").onclick=async()=>{const t="link,risk,verdict\n"+B.map(x=>`"${x.u}",${x.score},${x.score<0?"invalid":vd(x.score)[0]}`).join("\n");
+ try{await navigator.clipboard.writeText(t);$("bcopy").textContent="Copied!"}catch(e){$("bcopy").textContent="Copy blocked"}setTimeout(()=>$("bcopy").textContent="Copy results",1800)};
+// dashboard (numbers from the training run on the starter dataset)
+function dashInit(){setTimeout(()=>document.querySelectorAll(".card b").forEach(b=>{const v=parseFloat(b.textContent);countUp(b,v,1,"%")}),50);
+ const M=[["Accuracy","96.2%"],["Precision","91.2%"],["Recall","91.8%"],["F1-score","91.5%"]];
+ const MX=[["Safe links marked safe",183,"good"],["Safe links wrongly flagged. Annoying, but harmless.",7,"badc"],["Phishing links missed. This is the costly mistake.",7,"badc"],["Phishing links caught.",291,"good"]];
+ const F=[["php",1,"Links to .php pages are often fake login or form pages."],["login",1,"The word login is bait to make you type a password."],["pay",1,"Payment words are used to imitate banks and wallets."],[".com. in the middle",1,"A fake brand name hides before the real domain, like paypal.com.verify-it.xyz."],[".com/",0,"A clean .com/ right after the domain is typical of normal sites."],[".edu/",0,"Educational sites are rarely phishing."],[".htm",0,"Plain .htm pages are common on older real sites."]];
+ const TH={"0.5":[91.2,91.8],"0.4":[85.3,94.5],"0.3":[75.5,96.8]};
+ $("dash").innerHTML=`<div class="cards">${M.map(m=>`<div class="card"><span>${m[0]}</span><b>${m[1]}</b></div>`).join("")}</div>
+ <h3 style="margin:0 0 8px">Confusion matrix (tap a box)</h3><div class="mx"><span></span><b>Predicted safe</b><b>Predicted phishing</b>
+ <b style="align-self:center">Actual safe</b><button class="cell ${MX[0][2]}" data-m="0"><b>15,118</b>TN</button><button class="cell ${MX[1][2]}" data-m="1"><b>399</b>FP</button>
+ <b style="align-self:center">Actual phishing</b><button class="cell ${MX[2][2]}" data-m="2"><b>367</b>FN</button><button class="cell ${MX[3][2]}" data-m="3"><b>4,116</b>TP</button></div><div class="ex" id="mex">Tap a box to see what it means.</div>
+ <h3 style="margin:18px 0 6px">Patterns the model learned (tap one; red = phishing, green = safe)</h3>${F.map((f,i)=>`<button class="chip" data-f="${i}"><span style="color:${f[1]?"var(--bad)":"var(--safe)"}">●</span> ${f[0]}</button>`).join("")}<div class="ex" id="fex">Tap a pattern to see why it matters.</div>
+ <h3 style="margin:18px 0 6px">Decision threshold (tap one)</h3>${Object.keys(TH).map(t=>`<button class="chip" data-th="${t}">${t}</button>`).join("")}<div class="ex" id="tex">Lower threshold catches more phishing but raises false alarms.</div>
+ <p class="note">Results from the Kaggle “Phishing Site URLs” data: 100,000 URLs sampled (80,000 for training, 20,000 for testing), TF-IDF character patterns with Logistic Regression.</p>`;
+ $("dash").onclick=e=>{const c=e.target.closest("[data-m]"),b=e.target.closest("[data-f]");
+  if(c){document.querySelectorAll(".cell").forEach(x=>x.classList.remove("sel"));c.classList.add("sel");$("mex").textContent=MX[c.dataset.m][0]}
+  if(b)$("fex").textContent=F[b.dataset.f][2];const h=e.target.closest("[data-th]");if(h){const v=TH[h.dataset.th];$("tex").textContent=`At threshold ${h.dataset.th}: precision ${v[0]}%, recall ${v[1]}%. ${h.dataset.th=="0.5"?"Balanced.":"Catches more phishing, but more safe links get flagged."}`}}}
+
+// message check
+const PHR=["urgent","immediately","blocked","suspended","expire","expires","within 24 hours","click here","click now","verify now","act now","limited time","claim your","winner","prize","kyc","otp","unauthorized","locked","final notice","refund","last warning"];
+const LRE=/\b(?:https?:\/\/|www\.)[^\s<>"']+|\b[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:com|in|net|org|xyz|tk|top|click|ml|ga|cf|zip|co|info|online|biz|gq|work)\b(?:\/[^\s<>"']*)?/gi;
+function msgParse(t){const R=[];let m;LRE.lastIndex=0;
+ while((m=LRE.exec(t))){let u=m[0].replace(/[.,;:!?)\]]+$/,"");R.push({a:m.index,b:m.index+u.length,k:"link",u})}
+ const low=t.toLowerCase();
+ PHR.forEach(p=>{let i=-1;while((i=low.indexOf(p,i+1))>=0){const e=i+p.length;if(!R.some(r=>i<r.b&&e>r.a))R.push({a:i,b:e,k:"ph"})}});
+ return R.sort((x,y)=>x.a-y.a)}
+let apiDown=false;
+async function riskOf(u){const a=analyse(u);if(!a)return null;
+ if(!apiDown&&location.protocol.startsWith("http"))try{const r=await fetch("/predict",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url:u})});if(r.ok)return{a,score:Math.round((await r.json()).probability*100)};apiDown=true}catch(e){apiDown=true}
+ return{a,score:a.score}}
+const MS=["Dear customer, your SBI account is blocked. Verify now to avoid suspension: http://sbi-verify-kyc.xyz/login","Congratulations! You are a winner. Claim your prize within 24 hours at http://bit.ly/free-gift-claim","Hi, your Amazon order has shipped. Track it at https://www.amazon.in/gp/your-account/order-history","Hey, notes from today’s class are here: https://github.com/anthropics. See you tomorrow!"];
+MS.forEach((m,i)=>{const b=document.createElement("button");b.className="chip";b.type="button";b.textContent=["Fake bank SMS","Prize scam","Real order update","Normal chat"][i];b.onclick=()=>{$("mi").value=m;$("mgo").click()};$("mch").appendChild(b)});
+$("mgo").onclick=async()=>{const t=$("mi").value;if(!t.trim()){say("Paste a message first.");return}
+ const R=msgParse(t),L=R.filter(r=>r.k==="link");$("mgo").disabled=true;mood("think");say("Reading the message…");
+ const res=[];for(const l of L){const r=await riskOf(l.u);if(r)res.push({l,...r})}
+ const ph=R.filter(r=>r.k==="ph").length,mx=res.reduce((m,r)=>Math.max(m,r.score),0),worst=res.find(r=>r.score===mx);
+ const col=r=>vd(r.score)[1];let h="",p=0;
+ R.forEach(r=>{h+=esc(t.slice(p,r.a));const seg=esc(t.slice(r.a,r.b));
+  if(r.k==="ph")h+=`<span class="ph">${seg}</span>`;
+  else{const x=res.find(z=>z.l===r);h+=x?`<span class="mk" style="color:${col(x)};background:color-mix(in srgb,${col(x)} 16%,transparent)">${seg}</span>`:seg}
+  p=r.b});h+=esc(t.slice(p));
+ const V=mx>=45||(mx>=20&&ph>=2)?["bad","Not safe","var(--bad)",`${N()}, this message is not safe. Don’t click the link and don’t share any code or password.`]:(mx>=20||ph>=3)?["warn","Be careful","var(--warn)",`${N()}, be careful. Something feels off, so check with the sender through another channel.`]:["safe","Safe","var(--safe)",`${N()}, this message looks safe. No risky link or pressure tricks found.`];
+ mood(V[0]);sayv(V[0]==="safe"?`${N()}, this message looks okay to me.`:V[0]==="warn"?`Hmm ${N()}, I’d be careful with this one.`:`${N()}, whoa, this smells like a scam!`);
+ $("mout").innerHTML=`<div class="msgbox">${h}</div><div class="verdict" style="--c:${V[2]}"><h2>${V[1]}</h2><p>${V[3]}</p><p style="color:var(--mute);font-size:.9rem;margin-top:6px">Links found: ${res.length}. Pressure words found: ${ph} (wavy underline). Worst link risk: ${res.length?mx:"–"} / 100.</p>${res.map(r=>`<div class="lk"><span>${esc(r.l.u)}</span><span class="pill" style="background:${col(r)}">${vd(r.score)[0]} ${r.score}</span></div>`).join("")}${worst&&mx>=20?why(worst.a):""}</div>`;
+ $("mgo").disabled=false};
+
+// final touches
+$("vc").onclick=()=>{VOICE=!VOICE;$("vc").textContent="Voice: "+(VOICE?"on":"off");$("vc").setAttribute("aria-pressed",VOICE);if(VOICE)speak("Voice is on.")};
+const pb=document.createElement("button");pb.className="chip";pb.type="button";pb.textContent="Paste & check";
+pb.onclick=async()=>{try{$("url").value=await navigator.clipboard.readText();$("go").click()}catch(e){say("I can’t read your clipboard here. Press Ctrl+V in the box instead.")}};$("chips").appendChild(pb);
+function burst(){if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;const C=["#FFC857","#3DA37A","#2E8F83","#E8624F","#7BC8F6"];
+ for(let i=0;i<40;i++){const p=document.createElement("i");p.className="cf";p.style.left=Math.random()*100+"vw";p.style.background=C[i%5];
+  p.style.setProperty("--dx",(Math.random()*160-80)+"px");p.style.setProperty("--r",(Math.random()*720-360)+"deg");p.style.animationDelay=Math.random()*.4+"s";
+  document.body.appendChild(p);setTimeout(()=>p.remove(),2400)}}
+const TIPS=["Real banks never ask for your OTP or password through a link.","Hover over a link before clicking to see where it really goes.","A padlock or HTTPS only means the connection is private, not that the site is honest.","Urgent messages are a trick. Slow down and check with the sender.","When unsure, type the website address yourself instead of clicking.","Shortened links hide where they go. Be extra careful with them."];
+let tipI=0;
+$("face").addEventListener("click",()=>{say(TIPS[tipI++%TIPS.length]);mood("safe");setTimeout(()=>{if(!busy)mood("idle")},2200)});
+const hr=new Date().getHours();const N=()=>($("nm").value.trim()||"friend");
+try{const sv=localStorage.getItem("lc_name");if(sv)$("nm").value=sv}catch(e){}
+$("nm").addEventListener("input",()=>{try{localStorage.setItem("lc_name",$("nm").value)}catch(e){}});
+say((hr<12?"Good morning":hr<18?"Good afternoon":"Good evening")+", "+N()+"! I’m Sam. Give me a link and I’ll take a look.");mood("idle");
+document.addEventListener("keydown",e=>{if(e.key==="/"&&!/INPUT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();show("check");$("url").focus()}});
+</script>
+</body>
+</html>
