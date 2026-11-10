@@ -135,6 +135,13 @@ html{scroll-behavior:smooth}
 .wrap>:nth-child(2){animation-delay:.08s}.wrap>:nth-child(3){animation-delay:.16s}.wrap>:nth-child(4){animation-delay:.24s}
 .panel,.go,.chip,.cell,.tabs button,.tools button{transition:transform .18s,box-shadow .25s,background-color .25s,color .25s,border-color .25s}
 .chip:active,.cell:active,.tools button:active{transform:scale(.96)}
+.gauge{display:block;margin:8px auto 0;width:300px;max-width:100%}
+.needle{stroke:var(--ink);stroke-width:4;stroke-linecap:round;transform-box:view-box;transform-origin:100px 100px;transform:rotate(-90deg);transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
+.gv{font-size:26px;font-weight:800;fill:var(--ink);font-family:var(--f)}
+.ev{margin-top:18px}.ev h4{margin:0 0 8px}.evnote{display:block;margin-top:8px;font-size:.84rem;color:var(--mute)}
+.evc{display:inline-flex;gap:8px;align-items:baseline;margin:4px 6px 0 0;padding:6px 12px;border-radius:10px;font-family:ui-monospace,Menlo,monospace;font-weight:700;font-size:.92rem}
+.evc small{font-family:var(--f);font-weight:600;opacity:.8}
+.evc.up{background:color-mix(in srgb,var(--bad) 14%,var(--panel));color:var(--bad)}.evc.dn{background:color-mix(in srgb,var(--safe) 14%,var(--panel));color:var(--safe)}
 </style>
 </head>
 <body>
@@ -280,15 +287,15 @@ async function run(){
   if(c.hit)say(c.say);
  }
  await sleep(400);
- let score=a.score,src="rules";
+ let score=a.score,src="rules",ev=null;
  if(!apiDown&&location.protocol.startsWith("http"))try{const r=await fetch("/predict",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url:raw})});
-  if(r.ok){score=Math.round((await r.json()).probability*100);src="model"}else apiDown=true}catch(e){apiDown=true}
+  if(r.ok){const j=await r.json();score=Math.round(j.probability*100);src="model";ev=j.evidence||null}else apiDown=true}catch(e){apiDown=true}
  const v=score<20?["safe","Safe to open","var(--safe)",`${N()}, this link looks safe. I didn’t find anything worrying, but only click links you were expecting.`]
   :score<45?["warn","Be careful","var(--warn)",`${N()}, be careful. A few things look off, so check with the sender before clicking.`]
   :["bad","Not safe","var(--bad)",`${N()}, this link is not safe. Don’t click it, and don’t type any password there.`];
  const box=document.createElement("div");box.className="verdict";box.style.setProperty("--c",v[2]);
- box.innerHTML=`<h2>${v[1]}</h2><p>${v[3]}</p><div class="meter"><i></i></div><div class="scale"><span>Safe</span><span>${src==="model"?"Model":"Rule"} risk: <b class="cu" data-to="${score}">0</b> / 100</span><span>Dangerous</span></div>${why(a)}`;
- $("results").appendChild(box);box.querySelectorAll(".cu").forEach(e=>countUp(e,+e.dataset.to));box.scrollIntoView({behavior:"smooth",block:"nearest"});
+ box.innerHTML=`<h2>${v[1]}</h2><p>${v[3]}</p>${gauge(score)}<div class="meter"><i></i></div><div class="scale"><span>Safe</span><span>${src==="model"?"Model":"Rule"} risk: <b class="cu" data-to="${score}">0</b> / 100</span><span>Dangerous</span></div>${why(a)}${evHTML(ev)}`;
+ $("results").appendChild(box);box.querySelectorAll(".cu").forEach(e=>countUp(e,+e.dataset.to));box.querySelectorAll(".needle").forEach(n=>requestAnimationFrame(()=>requestAnimationFrame(()=>n.style.transform=`rotate(${score*1.8-90}deg)`)));box.scrollIntoView({behavior:"smooth",block:"nearest"});
  const cp=document.createElement("button");cp.className="chip";cp.type="button";cp.textContent="Copy summary";
  cp.onclick=async()=>{try{await navigator.clipboard.writeText(`${raw.trim()} → ${v[1]} (risk ${score}/100)`);cp.textContent="Copied!"}catch(e){cp.textContent="Copy blocked"}};box.appendChild(cp);
  requestAnimationFrame(()=>requestAnimationFrame(()=>box.querySelector("i").style.width=Math.max(4,score)+"%"));
@@ -313,6 +320,10 @@ const vd=n=>n<20?["Safe","var(--safe)"]:n<45?["Careful","var(--warn)"]:["Phishin
 // why this verdict
 function why(a){const h=a.C.filter(c=>c.hit).sort((x,y)=>y.pts-x.pts);
  return `<div class="why"><h4>Why this verdict</h4>`+(h.length?h.map(c=>`<div class="wr"><span>${c.t}</span><i style="width:${Math.max(6,c.pts*3)}px;max-width:100%"></i><b>+${c.pts}</b></div>`).join("")+`<span style="color:var(--mute);font-size:.84rem">Each bar is how many risk points that clue added.</span>`:`<span style="color:var(--mute)">No clue raised the risk, so nothing is pushing the score up.</span>`)+`</div>`}
+function gauge(sc){const P=a=>[100+80*Math.cos(a*Math.PI/180),100-80*Math.sin(a*Math.PI/180)],arc=(a,b,c)=>{const p=P(a),q=P(b);return `<path d="M${p[0].toFixed(1)} ${p[1].toFixed(1)} A80 80 0 0 1 ${q[0].toFixed(1)} ${q[1].toFixed(1)}" stroke="${c}" stroke-width="16" fill="none"/>`};
+ return `<svg class="gauge" viewBox="0 0 200 136" role="img" aria-label="Risk gauge">${arc(180,144,"var(--safe)")}${arc(144,99,"var(--warn)")}${arc(99,0,"var(--bad)")}<line class="needle" x1="100" y1="100" x2="100" y2="34"/><circle cx="100" cy="100" r="7" fill="var(--ink)"/><text class="gv cu" data-to="${sc}" x="100" y="132" text-anchor="middle">0</text></svg>`}
+function evHTML(ev){if(!ev||(!ev.up.length&&!ev.down.length))return "";const c=(l,k)=>l.map(x=>`<span class="evc ${k}">${esc(x[0])}<small>${x[1]>0?"+":""}${x[1]}</small></span>`).join("");
+ return `<div class="ev"><h4>What the model saw</h4>${c(ev.up,"up")}${c(ev.down,"dn")}<span class="evnote">These are the character pieces of the link the model weighed. Red pushed toward phishing, green toward safe. The number shows how strongly.</span></div>`}
 // tabs and look
 function show(t){document.querySelectorAll(".tab").forEach(x=>x.hidden=x.id!=="t-"+t);
  document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.t===t));

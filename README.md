@@ -1,6 +1,6 @@
 # Phishing URL Detector
 
-Machine-learning project: a Random Forest looks at the *text* of a URL and says whether it is phishing or safe. A Flask API serves the model and a friendly web page (Sam) demos it.
+Machine-learning project: a machine-learning model (TF-IDF character patterns + Logistic Regression, chosen after comparing 4 models with compare.py) looks at the *text* of a URL and says whether it is phishing or safe. A Flask API serves the model and a friendly web page (Sam) demos it.
 
 ## Run it (4 commands)
 ```
@@ -29,6 +29,9 @@ NOTE: `make_sample_data.py` creates synthetic URLs, so its accuracy is not a rea
 - **Batch check** – paste many links, sort by risk, copy as CSV.
 - **Message check** – paste an SMS/email; links are found and scored, pressure words (urgent, blocked, claim now...) are underlined.
 - **Model dashboard** – metrics, confusion matrix and feature importance (edit the numbers in `static/index.html` after training on your real dataset).
+
+## Trusted-domain step
+Before the model's answer is shown, `app.py` checks whether the link's registered domain is on a short list of well-known official sites (exact match, so look-alikes such as paypal.com.verify.xyz never match). Those links get a low risk score. The same list is used in the web page. Edit `TRUSTED` in `features.py` to add more.
 
 ## Limits (say these in your interview)
 - Reads only the URL text; never visits the page.
