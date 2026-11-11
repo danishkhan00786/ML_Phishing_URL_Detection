@@ -209,12 +209,15 @@ html{scroll-behavior:smooth}
 <script>
 const $=id=>document.getElementById(id);
 const EX=[["Everyday site","https://www.wikipedia.org"],["Fake PayPal","http://paypal-secure-login.verify-account.tk/signin"],["Numbers, not a name","http://192.168.4.7/bank/update@login.php"],["Fake Google","https://accounts.google.com.security-check.xyz/verify"]];
-const WORDS=["login","signin","verify","secure","security","account","update","bank","confirm","password","wallet","suspend","kyc","otp","claim","prize","gift","lottery","refund"];
-const OFFICIAL={paypal:["paypal.com"],google:["google.com","gmail.com","youtube.com","google.co.in","googleapis.com"],amazon:["amazon.com","amazon.in","amazon.co.uk","amazonaws.com"],microsoft:["microsoft.com","microsoftonline.com","live.com","office.com","outlook.com"],apple:["apple.com","icloud.com"],netflix:["netflix.com"],facebook:["facebook.com","fb.com"],instagram:["instagram.com"],sbi:["sbi.co.in","onlinesbi.sbi","onlinesbi.com","sbi.bank.in"],hdfc:["hdfcbank.com","hdfc.com","hdfclife.com"],icici:["icicibank.com","icicibank.co.in","icici.com"],paytm:["paytm.com"]};
+const WORDS=["login","signin","verify","secure","security","account","update","bank","confirm","password","wallet","suspend","free","winner","recharge","alert","billing","suspended","activation","renew","reward","nitro","portal","verif","kyc","otp","claim","prize","gift","lottery","refund"];
+const OFFICIAL={paypal:["paypal.com"],google:["google.com","gmail.com","youtube.com","google.co.in","googleapis.com"],amazon:["amazon.com","amazon.in","amazon.co.uk","amazonaws.com"],microsoft:["microsoft.com","microsoftonline.com","live.com","office.com","outlook.com"],apple:["apple.com","icloud.com"],netflix:["netflix.com"],facebook:["facebook.com","fb.com"],instagram:["instagram.com"],sbi:["sbi.co.in","onlinesbi.sbi","onlinesbi.com","sbi.bank.in"],hdfc:["hdfcbank.com","hdfc.com","hdfclife.com"],icici:["icicibank.com","icicibank.co.in","icici.com"],paytm:["paytm.com"],airtel:["airtel.in","airtel.com"],jio:["jio.com"],flipkart:["flipkart.com"],aws:["aws.com", "amazonaws.com", "amazon.com"],azure:["azure.com", "microsoft.com", "windows.net"],adobe:["adobe.com"],slack:["slack.com"],zoom:["zoom.us", "zoom.com"],dropbox:["dropbox.com"],chase:["chase.com"],bankofamerica:["bankofamerica.com"],wellsfargo:["wellsfargo.com"],citibank:["citibank.com", "citi.com"],americanexpress:["americanexpress.com", "aexp.com"],capitalone:["capitalone.com"],hsbc:["hsbc.com", "hsbc.co.in", "hsbc.co.uk"],ebay:["ebay.com", "ebay.in"],walmart:["walmart.com"],target:["target.com"],bestbuy:["bestbuy.com"],aliexpress:["aliexpress.com"],spotify:["spotify.com"],steam:["steampowered.com", "steamcommunity.com"],epicgames:["epicgames.com"],playstation:["playstation.com"],xbox:["xbox.com"],disneyplus:["disneyplus.com"],twitter:["twitter.com", "x.com"],linkedin:["linkedin.com"],discord:["discord.com", "discord.gg"],whatsapp:["whatsapp.com"],telegram:["telegram.org", "t.me"],tiktok:["tiktok.com"],snapchat:["snapchat.com"],amzn:["amazon.com", "amzn.to"]};
 const TRUSTED=new Set([].concat(...Object.values(OFFICIAL),["github.com","wikipedia.org","stackoverflow.com","linkedin.com","flipkart.com","nytimes.com","bbc.co.uk","bbc.com","irctc.co.in","twitter.com","x.com","whatsapp.com","zoom.us","dropbox.com","reddit.com","medium.com","coursera.org","python.org","mozilla.org","adobe.com"]));
 const trustedTld=h=>/\.(gov|edu|mil)$/.test(h)||/\.(gov|nic|ac)\.in$/.test(h)||/\.(gov|ac)\.uk$/.test(h);
-const BRANDS=["paypal","google","amazon","microsoft","apple","netflix","facebook","instagram","sbi","hdfc","icici","paytm"];
-const TLDS=["tk","xyz","top","ml","ga","cf","click","zip","gq","work"];
+const BRANDS=["paypal","google","amazon","microsoft","apple","netflix","facebook","instagram","sbi","hdfc","icici","paytm","airtel","jio","flipkart","aws","azure","adobe","slack","zoom","dropbox","chase","bankofamerica","wellsfargo","citibank","americanexpress","capitalone","hsbc","ebay","walmart","target","bestbuy","aliexpress","spotify","steam","epicgames","playstation","xbox","disneyplus","twitter","linkedin","discord","whatsapp","telegram","tiktok","snapchat","amzn"];
+const EQ=new Set(["target","steam","apple","slack","zoom","chase","adobe","xbox","ebay","aws","amzn","hsbc","azure"]);
+const GEN=new Set(["target","steam","apple","slack"]);
+const lev=(a,b)=>{const m=[...Array(a.length+1)].map((_,i)=>[i,...Array(b.length).fill(0)]);for(let j=1;j<=b.length;j++)m[0][j]=j;for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)m[i][j]=Math.min(m[i-1][j]+1,m[i][j-1]+1,m[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return m[a.length][b.length]};
+const TLDS=["tk","xyz","top","ml","ga","cf","click","zip","gq","work","online","site","icu","buzz"];
 const SHORT=["bit.ly","tinyurl.com","t.co","goo.gl","is.gd","cutt.ly","rebrand.ly"];
 
 const face={
@@ -245,13 +248,17 @@ $("pl").style.transition=$("pr").style.transition="transform .08s";
 function analyse(raw){
  let s=raw.trim(),typed=/^[a-z][a-z0-9+.-]*:\/\//i.test(s);
  if(/\s/.test(s))return null;
- let u;try{u=new URL(typed?s:"http://"+s);const hn=u.hostname;if(!(/^(?:[a-z0-9-]{1,63}\.)+(?:[a-z]{2,24}|xn--[a-z0-9-]+)$/i.test(hn)||/^\d{1,3}(\.\d{1,3}){3}$/.test(hn)))throw 0}catch(e){return null}
+ let u;try{u=new URL(typed?s:"http://"+s);const hn=u.hostname.replace(/\.$/,"");if(!(/^(?:[a-z0-9-]{1,63}\.)+(?:[a-z]{2,24}|xn--[a-z0-9-]+)$/i.test(hn)||/^\d{1,3}(\.\d{1,3}){3}$/.test(hn)))throw 0}catch(e){return null}
  const host=u.hostname.toLowerCase(),full=s.toLowerCase(),L=host.split(".");
  const sec=(L.length>=3&&L.at(-1).length===2&&["co","com","org","net","gov","ac"].includes(L.at(-2)))?3:2;
  const reg=L.slice(-sec),regLabel=reg[0],tld=L.at(-1);
+ const ui=(s.replace(/^[a-z][a-z0-9+.-]*:\/\//i,"").split(/[\/?#]/)[0].split("@").slice(0,-1).join("@")),hasAt=ui.length>0;
  const isIP=/^\d{1,3}(\.\d{1,3}){3}$/.test(host);
  const regDom=reg.join("."),trusted=TRUSTED.has(regDom)||trustedTld(host);
- const words=trusted?[]:WORDS.filter(w=>full.includes(w)),brand=trusted?null:BRANDS.find(b=>host.includes(b)&&!(OFFICIAL[b]||[]).includes(regDom));
+ const words=trusted?[]:WORDS.filter(w=>full.includes(w)),brand=trusted?null:BRANDS.find(b=>{const lv=[host,host.replace(/0/g,"o").replace(/1/g,"l").replace(/3/g,"e").replace(/5/g,"s"),host.replace(/0/g,"o").replace(/1/g,"i").replace(/3/g,"e").replace(/5/g,"s")];
+  const hit=lv.some(h=>{const T=h.split(/[.-]/);return EQ.has(b)||b.length<=5?T.some(t=>t===b||(b.length>=4&&!EQ.has(b)&&t.startsWith(b)&&t.length<=b.length+4)):h.includes(b)||T.some(t=>t.length>=5&&Math.abs(t.length-b.length)<=1&&lev(t,b)<=1)});
+  const fz=!GEN.has(b)&&b.length>=5&&lv.some(h=>h.split(/[.-]/).some(t=>t.length>=5&&Math.abs(t.length-b.length)<=1&&lev(t,b)<=1));
+  return (hit||fz)&&!(OFFICIAL[b]||[]).includes(regDom)});
  const hy=(host.match(/-/g)||[]).length,dots=L.length-1;
  const puny=host.includes("xn--"),short=SHORT.includes(host);
  const C=[];
@@ -259,11 +266,11 @@ function analyse(raw){
  add("Secure connection",typed&&u.protocol==="http:",12,typed?"The link uses HTTPS, so the connection is encrypted.":"No scheme given, so I can’t judge this one.","It starts with plain http, so nothing is encrypted.");
  add("Link length",!trusted&&s.length>54,s.length>75?10:5,`Only ${s.length} characters, which is normal.`,`${s.length} characters is long. Long links often hide things.`);
  add("Name or numbers",isIP,30,"The address is a proper domain name.","The address is just numbers (an IP). Real companies almost never do this.");
- add("The @ symbol",host!==u.host&&false||s.includes("@"),20,"No @ symbol in the link.","An @ can make the browser ignore everything before it. A classic trick.");
- add("Hyphens in the domain",hy>=2,10,"Few or no hyphens in the domain.",`${hy} hyphens in the domain. Fakes often glue words together.`);
+ add("The @ symbol",hasAt,ui.includes(".")?35:20,"No @ trick in the address part of the link.","Text before an @ in the address is ignored by the browser, so the real site is the part after it. A classic trick.");
+ add("Hyphens in the domain",hy>=1,hy>=2?10:5,"Few or no hyphens in the domain.",`${hy} hyphens in the domain. Fakes often glue words together.`);
  add("Subdomain depth",dots>3,12,"A normal number of dots in the address.",`${dots} dots means many sub-parts, often used to bury the real domain.`);
  add("Pressure words",words.length>0,Math.min(24,words.length*8),trusted?"This is a well-known official site, so normal wording is fine.":"No “login”, “verify” or similar bait words.",`Found: ${words.join(", ")}. These push you to act fast.`);
- add("Look-alike brand",!!brand,25,"No brand name pretending to be the real owner.",`It uses “${brand}” but the real domain is ${reg.join(".")}.`);
+ add("Look-alike brand",!!brand,25+(host.includes("-")?10:0)+(brand&&!host.includes(brand)?10:0),"No brand name pretending to be the real owner.",`It uses “${brand}” but the real domain is ${reg.join(".")}.`);
  add("Unusual ending",TLDS.includes(tld),12,`.${tld} is a common, widely used ending.`,`.${tld} is cheap or free, and often used for throwaway sites.`);
  add("Disguised address",puny||short,20,"The address isn’t shortened or disguised.",puny?"It uses look-alike characters (punycode).":"It’s a shortened link, so the real target is hidden.");
  const score=Math.min(100,C.reduce((a,c)=>a+c.pts,0));
