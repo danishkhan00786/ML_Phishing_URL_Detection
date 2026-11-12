@@ -248,6 +248,7 @@ $("pl").style.transition=$("pr").style.transition="transform .08s";
 function analyse(raw){
  let s=raw.trim(),typed=/^[a-z][a-z0-9+.-]*:\/\//i.test(s);
  if(/\s/.test(s))return null;
+ const rh=s.replace(/^[a-z][a-z0-9+.-]*:\/\//i,"").split(/[\/?#:]/)[0];if(/^[\d.]+$/.test(rh)&&!/^\d{1,3}(\.\d{1,3}){3}$/.test(rh))return null;
  let u;try{u=new URL(typed?s:"http://"+s);const hn=u.hostname.replace(/\.$/,"");if(!(/^(?:[a-z0-9-]{1,63}\.)+(?:[a-z]{2,24}|xn--[a-z0-9-]+)$/i.test(hn)||/^\d{1,3}(\.\d{1,3}){3}$/.test(hn)))throw 0}catch(e){return null}
  const host=u.hostname.toLowerCase(),full=s.toLowerCase(),L=host.split(".");
  const sec=(L.length>=3&&L.at(-1).length===2&&["co","com","org","net","gov","ac"].includes(L.at(-2)))?3:2;
@@ -255,7 +256,7 @@ function analyse(raw){
  const ui=(s.replace(/^[a-z][a-z0-9+.-]*:\/\//i,"").split(/[\/?#]/)[0].split("@").slice(0,-1).join("@")),hasAt=ui.length>0;
  const isIP=/^\d{1,3}(\.\d{1,3}){3}$/.test(host);
  const regDom=reg.join("."),trusted=TRUSTED.has(regDom)||trustedTld(host);
- const words=trusted?[]:WORDS.filter(w=>full.includes(w)),brand=trusted?null:BRANDS.find(b=>{const lv=[host,host.replace(/0/g,"o").replace(/1/g,"l").replace(/3/g,"e").replace(/5/g,"s"),host.replace(/0/g,"o").replace(/1/g,"i").replace(/3/g,"e").replace(/5/g,"s")];
+ const words=trusted?[]:WORDS.filter(w=>(host+u.pathname.toLowerCase()).includes(w)),brand=trusted?null:BRANDS.find(b=>{const lv=[host,host.replace(/0/g,"o").replace(/1/g,"l").replace(/3/g,"e").replace(/5/g,"s"),host.replace(/0/g,"o").replace(/1/g,"i").replace(/3/g,"e").replace(/5/g,"s")];
   const hit=lv.some(h=>{const T=h.split(/[.-]/);return EQ.has(b)||b.length<=5?T.some(t=>t===b||(b.length>=4&&!EQ.has(b)&&t.startsWith(b)&&t.length<=b.length+4)):h.includes(b)||T.some(t=>t.length>=5&&Math.abs(t.length-b.length)<=1&&lev(t,b)<=1)});
   const fz=!GEN.has(b)&&b.length>=5&&lv.some(h=>h.split(/[.-]/).some(t=>t.length>=5&&Math.abs(t.length-b.length)<=1&&lev(t,b)<=1));
   return (hit||fz)&&!(OFFICIAL[b]||[]).includes(regDom)});
@@ -270,7 +271,7 @@ function analyse(raw){
  add("Hyphens in the domain",hy>=1,hy>=2?10:5,"Few or no hyphens in the domain.",`${hy} hyphens in the domain. Fakes often glue words together.`);
  add("Subdomain depth",dots>3,12,"A normal number of dots in the address.",`${dots} dots means many sub-parts, often used to bury the real domain.`);
  add("Pressure words",words.length>0,Math.min(24,words.length*8),trusted?"This is a well-known official site, so normal wording is fine.":"No “login”, “verify” or similar bait words.",`Found: ${words.join(", ")}. These push you to act fast.`);
- add("Look-alike brand",!!brand,25+(host.includes("-")?10:0)+(brand&&!host.includes(brand)?10:0),"No brand name pretending to be the real owner.",`It uses “${brand}” but the real domain is ${reg.join(".")}.`);
+ add("Look-alike brand",!!brand,25+(host.includes("-")?15:0)+(brand&&!host.includes(brand)?10:0),"No brand name pretending to be the real owner.",`It uses “${brand}” but the real domain is ${reg.join(".")}.`);
  add("Unusual ending",TLDS.includes(tld),12,`.${tld} is a common, widely used ending.`,`.${tld} is cheap or free, and often used for throwaway sites.`);
  add("Disguised address",puny||short,20,"The address isn’t shortened or disguised.",puny?"It uses look-alike characters (punycode).":"It’s a shortened link, so the real target is hidden.");
  const score=Math.min(100,C.reduce((a,c)=>a+c.pts,0));
