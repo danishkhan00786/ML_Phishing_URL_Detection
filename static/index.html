@@ -210,6 +210,7 @@ html{scroll-behavior:smooth}
 const $=id=>document.getElementById(id);
 const EX=[["Everyday site","https://www.wikipedia.org"],["Fake PayPal","http://paypal-secure-login.verify-account.tk/signin"],["Numbers, not a name","http://192.168.4.7/bank/update@login.php"],["Fake Google","https://accounts.google.com.security-check.xyz/verify"]];
 const WORDS=["login","signin","verify","secure","security","account","update","bank","confirm","password","wallet","suspend","free","winner","recharge","alert","billing","suspended","activation","renew","reward","nitro","portal","verif","kyc","otp","claim","prize","gift","lottery","refund"];
+const mix=(m,c)=>Math.max(c>=20||m>=85?m:Math.round(m*.25),c); // the model alone must be very confident (85+) unless the clues also show a risk (20+)
 const OFFICIAL={paypal:["paypal.com"],google:["google.com","gmail.com","youtube.com","google.co.in","googleapis.com"],amazon:["amazon.com","amazon.in","amazon.co.uk","amazonaws.com"],microsoft:["microsoft.com","microsoftonline.com","live.com","office.com","outlook.com"],apple:["apple.com","icloud.com"],netflix:["netflix.com"],facebook:["facebook.com","fb.com"],instagram:["instagram.com"],sbi:["sbi.co.in","onlinesbi.sbi","onlinesbi.com","sbi.bank.in"],hdfc:["hdfcbank.com","hdfc.com","hdfclife.com"],icici:["icicibank.com","icicibank.co.in","icici.com"],paytm:["paytm.com"],airtel:["airtel.in","airtel.com"],jio:["jio.com"],flipkart:["flipkart.com"],aws:["aws.com", "amazonaws.com", "amazon.com"],azure:["azure.com", "microsoft.com", "windows.net"],adobe:["adobe.com"],slack:["slack.com"],zoom:["zoom.us", "zoom.com"],dropbox:["dropbox.com"],chase:["chase.com"],bankofamerica:["bankofamerica.com"],wellsfargo:["wellsfargo.com"],citibank:["citibank.com", "citi.com"],americanexpress:["americanexpress.com", "aexp.com"],capitalone:["capitalone.com"],hsbc:["hsbc.com", "hsbc.co.in", "hsbc.co.uk"],ebay:["ebay.com", "ebay.in"],walmart:["walmart.com"],target:["target.com"],bestbuy:["bestbuy.com"],aliexpress:["aliexpress.com"],spotify:["spotify.com"],steam:["steampowered.com", "steamcommunity.com"],epicgames:["epicgames.com"],playstation:["playstation.com"],xbox:["xbox.com"],disneyplus:["disneyplus.com"],twitter:["twitter.com", "x.com"],linkedin:["linkedin.com"],discord:["discord.com", "discord.gg"],whatsapp:["whatsapp.com"],telegram:["telegram.org", "t.me"],tiktok:["tiktok.com"],snapchat:["snapchat.com"],amzn:["amazon.com", "amzn.to"]};
 const TRUSTED=new Set([].concat(...Object.values(OFFICIAL),["github.com","wikipedia.org","stackoverflow.com","linkedin.com","flipkart.com","nytimes.com","bbc.co.uk","bbc.com","irctc.co.in","twitter.com","x.com","whatsapp.com","zoom.us","dropbox.com","reddit.com","medium.com","coursera.org","python.org","mozilla.org","adobe.com"]));
 const trustedTld=h=>/\.(gov|edu|mil)$/.test(h)||/\.(gov|nic|ac)\.in$/.test(h)||/\.(gov|ac)\.uk$/.test(h);
@@ -295,14 +296,14 @@ async function run(){
   if(c.hit)say(c.say);
  }
  await sleep(400);
- let score=a.score,src="rules",ev=null;
+ let score=a.score,src="rules",ev=null,mp=null;
  if(!apiDown&&location.protocol.startsWith("http"))try{const r=await fetch("/predict",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url:raw})});
-  if(r.ok){const j=await r.json();score=Math.round(j.probability*100);src="model";ev=j.evidence||null}else apiDown=true}catch(e){apiDown=true}
+  if(r.ok){const j=await r.json();mp=Math.round(j.probability*100);score=mix(mp,a.score);src="model";ev=j.evidence||null}else apiDown=true}catch(e){apiDown=true}
  const v=score<20?["safe","Safe to open","var(--safe)",`${N()}, this link looks safe. I didn’t find anything worrying, but only click links you were expecting.`]
   :score<45?["warn","Be careful","var(--warn)",`${N()}, be careful. A few things look off, so check with the sender before clicking.`]
   :["bad","Not safe","var(--bad)",`${N()}, this link is not safe. Don’t click it, and don’t type any password there.`];
  const box=document.createElement("div");box.className="verdict";box.style.setProperty("--c",v[2]);
- box.innerHTML=`<h2>${v[1]}</h2><p>${v[3]}</p>${gauge(score)}<div class="meter"><i></i></div><div class="scale"><span>Safe</span><span>${src==="model"?"Model":"Rule"} risk: <b class="cu" data-to="${score}">0</b> / 100</span><span>Dangerous</span></div>${why(a)}${evHTML(ev)}`;
+ box.innerHTML=`<h2>${v[1]}</h2><p>${v[3]}</p>${gauge(score)}<div class="meter"><i></i></div><div class="scale"><span>Safe</span><span>${src==="model"?`Risk (model ${mp} + clues ${a.score})`:"Rule risk"}: <b class="cu" data-to="${score}">0</b> / 100</span><span>Dangerous</span></div>${why(a)}${evHTML(ev)}`;
  $("results").appendChild(box);box.querySelectorAll(".cu").forEach(e=>countUp(e,+e.dataset.to));box.querySelectorAll(".needle").forEach(n=>requestAnimationFrame(()=>requestAnimationFrame(()=>n.style.transform=`rotate(${score*1.8-90}deg)`)));box.scrollIntoView({behavior:"smooth",block:"nearest"});
  const cp=document.createElement("button");cp.className="chip";cp.type="button";cp.textContent="Copy summary";
  cp.onclick=async()=>{try{await navigator.clipboard.writeText(`${raw.trim()} → ${v[1]} (risk ${score}/100)`);cp.textContent="Copied!"}catch(e){cp.textContent="Copy blocked"}};box.appendChild(cp);
@@ -393,7 +394,7 @@ function msgParse(t){const R=[];let m;LRE.lastIndex=0;
  return R.sort((x,y)=>x.a-y.a)}
 let apiDown=false;
 async function riskOf(u){const a=analyse(u);if(!a)return null;
- if(!apiDown&&location.protocol.startsWith("http"))try{const r=await fetch("/predict",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url:u})});if(r.ok)return{a,score:Math.round((await r.json()).probability*100)};apiDown=true}catch(e){apiDown=true}
+ if(!apiDown&&location.protocol.startsWith("http"))try{const r=await fetch("/predict",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url:u})});if(r.ok)return{a,score:mix(Math.round((await r.json()).probability*100),a.score)};apiDown=true}catch(e){apiDown=true}
  return{a,score:a.score}}
 const MS=["Dear customer, your SBI account is blocked. Verify now to avoid suspension: http://sbi-verify-kyc.xyz/login","Congratulations! You are a winner. Claim your prize within 24 hours at http://bit.ly/free-gift-claim","Hi, your Amazon order has shipped. Track it at https://www.amazon.in/gp/your-account/order-history","Hey, notes from today’s class are here: https://github.com/anthropics. See you tomorrow!"];
 MS.forEach((m,i)=>{const b=document.createElement("button");b.className="chip";b.type="button";b.textContent=["Fake bank SMS","Prize scam","Real order update","Normal chat"][i];b.onclick=()=>{$("mi").value=m;$("mgo").click()};$("mch").appendChild(b)});
